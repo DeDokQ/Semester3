@@ -2,10 +2,10 @@
 class User
 {
 private:
-	char name[25];
-	char password[30];
+	string name;
+	string password;
 
-	virtual char* encrypting(string str)
+	virtual string encrypting(string str)
     {
         int n = 3;
         char* cstr = new char[str.length() + 1];
@@ -37,80 +37,80 @@ private:
 
     void create_admin()
     {
-        char admin_password[6];
-        strcpy(admin_password, encrypting("admin"));
-        char admin_nickname[6] = "admin";
+        string admin_password;
+        admin_password = encrypting("admin");
+        string admin_nickname = "admin";
         
-        strcpy(name, admin_nickname);
-        strcpy(password, admin_password);
+        this->name = admin_nickname;
+        this->password = admin_password;
 
-       /* cout << admin_password << endl;
+        cout << admin_password << endl;
         cout << admin_nickname << endl;
 
         cout << password;
-        cout << name;*/
+        cout << name;
     }
 	
 public:
-	User(char* newname, char* newpassword) { strcpy_s(this->name, newname); strcpy_s(this->password, newpassword); }
-	User(const char* newname, const char* newpassword) { strcpy_s(this->name, newname); strcpy_s(this->password, newpassword); }
+    User(string newname, string newpassword) { this->name = newname; this->password = newpassword; }
     User(){}
 
-    bool dataSertificate(char* serf, char* berf)
+    bool dataSertificate(string logincheck, string passcheck)
     {
-        system("cls");
-        int numberSumbolName, numberSumbolPass;
-
-        numberSumbolName = strlen(serf);
-        numberSumbolPass = strlen(berf);
-        for (int i = 0; i <= numberSumbolName; i++)
+        system("cls");          
+        if (logincheck.find(' ') != string::npos) 
         {
-            if (numberSumbolName > 20 || numberSumbolName <= 3 || numberSumbolPass > 20 || numberSumbolPass <= 3 || serf[i] == ' ' || serf[i] == '(' || serf[i] == ')' || serf[i] == '.' || serf[i] == ',' || serf[i] == '!' || serf[i] == '?' || serf[i] == '*' || serf[i] == '`' || serf[i] == '~')
-            {
-                if (numberSumbolName > 25) cout << "| Вы ввели слишком много символов(% d), лимит которых составляет двадцать. Повторите попытку" << endl;
-                if (numberSumbolPass > 30) cout << "| Вы ввели слишком мало символов(% d), минимальное кол - во четыре символа, максимальное двадцать. Повторите попытку" << endl;
-
-                cout << "| Вызвана помощь Пользователя\n| Никнейм или пароль не должен содержать пробелы, нижние подчёркинвания ( _ ), знаки ( () . , ! ? * ` ~ )" << endl;
-                system("pause");
-                return FALSE;
-            }
-            else
+            cout << "Логин не может содержать пробелы " << endl;
+            system("pause");
+        }
+        else
+            if (passcheck.find(' ') == string::npos && passcheck.size() >= 4)
             {
                 return TRUE;
             }
-        }
+            else if (passcheck.find(' ') != string::npos)
+            {
+                cout << "Пароль не может содержать пробелы " << endl;
+                system("pause");
+                return FALSE;
+            }
+            else 
+            {
+                cout << "Пароль должен содержать не менее 4 символов " << endl;
+                system("pause");
+                return TRUE;
+            }
 
     }
 
-    char* outputDataN()
+    string outputDataN()
     {
         return name;
     }
 
-    char* outputDataP()
+    string outputDataP()
     {
         return password;
     }
 
     bool create_user(int uif)
     {
-        char tempname[40];
-        char temppassword[40];
         while (1)
         {
             cin.clear();
             cin.ignore(10, '\n');
             cout << "| ЕСЛИ ХОТИТЕ ОТМЕНИТЬ ОПЕРАЦИЮ, ВВЕДИТЕ ПУСТУЮ СТРОКУ! " << endl;
-            cout << "| Логин: "; cin >> tempname;
+            cout << "| Логин: "; cin >> name;
 
-            if (!tempname[0]) return FALSE;
+            if (!name[0]) return FALSE;
 
             cin.ignore(10, '\n');
 
-            cout << "| Пароль: "; cin >> temppassword;
-
+            cout << "| Пароль: ";
+            cin >> password; password = encrypting(password);
+                
             if (uif == 1)
-                if (strcmp(tempname, "admin") == 0)
+                if (name == "admin")
                 {
                     system("cls");
 
@@ -120,11 +120,8 @@ public:
                     cout << "| "; system("pause");
                     return FALSE;
                 }
-            if(dataSertificate(tempname, temppassword) == TRUE) break;
+            if(dataSertificate(name, password) == TRUE) break;
         }
-        strcpy(name, tempname);
-        strcpy(password, encrypting(temppassword));
-
         return TRUE;
     }
 
@@ -140,25 +137,15 @@ public:
     }
 };
 
-bool checkCorrectInput(User obj, string file, int uif);
+bool checkDataFile(User obj, string file, int uif);
 bool CheckAdminRoot(User);
 
-class Kinoteatr
-{
-protected:
-    char title[20] = "Vocha";
-    string discription;
-    int roomsQuantity; // Создание массива, в котором лежат двумерные массивы...
-    // Создать САБ класс kinoRoom, в котором объекты - это зал или другое помещение нашего кинотеатра
-    // Создать для User саб класс, в котором сделать заказы
-};
-
-class B : public Kinoteatr
-{
-
-};
-
-int main()
-{
-    B obj[10];
-}
+//class Kinoteatr
+//{
+//protected:
+//    char title[20] = "Vocha";
+//    string discription;
+//    int roomsQuantity; // Создание массива, в котором лежат двумерные массивы...
+//    // Создать САБ класс kinoRoom, в котором объекты - это зал или другое помещение нашего кинотеатра
+//    // Создать для User саб класс, в котором сделать заказы
+//};

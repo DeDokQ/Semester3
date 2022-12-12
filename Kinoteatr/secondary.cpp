@@ -60,7 +60,7 @@ void registration()
 		cout << "| Пожалуйста, введите Ваши данные.          |" << endl;
 		cout << "+-------------------+---------------+-------+" << endl;
 		if(newUser.create_user(1) == FALSE) break;
-		if (checkCorrectInput(newUser, "user.txt", 1) == TRUE) break;
+		if (checkDataFile(newUser, "user.txt", 1) == TRUE) break;
 	}
 }
 
@@ -78,9 +78,9 @@ void autorisation()
 		cout << "| Пожалуйста, введите Ваши данные.          |" << endl;
 		cout << "+-------------------+---------------+-------+" << endl;
 		if (oldUser.create_user(0) == FALSE) break;
-		if (checkCorrectInput(oldUser, "user.txt", 0) == TRUE)
-			if (CheckAdminRoot(oldUser) == 1) { cout << "OPPA!" << endl; system("pause"); }
-			else { cout << " :( " << endl; }
+		if (checkDataFile(oldUser, "user.txt", 0) == TRUE)
+		if (CheckAdminRoot(oldUser) == 1) { cout << "OPPA!" << endl; system("pause"); }
+		else { cout << " :( " << endl; }
 	}
 	
 }
@@ -97,11 +97,14 @@ void setFirstAdmin()
 		User sysAdmin;
 		sysAdmin.admin_create_account();
 
-		aout.write((char*)&sysAdmin, sizeof(User)); // CDEFG
+		aout << sysAdmin.outputDataN() << ";" << sysAdmin.outputDataP() << endl;
+
 		aout.close();
 
 		aout.open("user.txt", fstream::app);
-		aout.write((char*)&sysAdmin, sizeof(User)); // CDEFG
+
+		aout << sysAdmin.outputDataN() << ";" << sysAdmin.outputDataP() << endl;
+
 		aout.close();
 	}
 
@@ -110,28 +113,45 @@ void setFirstAdmin()
 
 bool CheckAdminRoot(User obj)
 {
-	fstream aout;
-	aout.open("admin.txt", fstream::in);
 
-	//int count = 0;
-	aout.seekg(0, ios::end);
-	int size = aout.tellg();
-	//count = size / sizeof(User);
-	User* TempObj;
-	TempObj = (User*)malloc(size);
-	aout.seekg(0, ios::beg);
+	ifstream in;
+	string buff, passCheck;
+	vector <string> out;
+	const char delim = ';';
+	bool check = false;
 
-	int k = 0;
-	while (aout.read((char*)&TempObj[k], sizeof(User)))
+	string templogin;
+	string temppass;
+
+	try
 	{
-		if (strcmp(obj.outputDataN(), TempObj[k].outputDataN()) == 0) return TRUE;
-		k++;
+		in.open("admin.txt");
+		while (getline(in, buff))
+		{
+			size_t start, end = 0;
+			while ((start = buff.find_first_not_of(delim, end)) != std::string::npos)
+			{
+				end = buff.find(delim, start);
+				out.push_back(buff.substr(start, end - start));
+			}
+			templogin = out.front();
+			if (obj.outputDataN() == templogin)
+				return TRUE;
+			else
+				out.clear();
+
+		}
+		return FALSE;
 	}
-	aout.close();
-	return FALSE;
+	catch (...) {
+		cout << "Ошибка при попытке открытия файла! " << endl;
+		system("pause");
+		out.clear();
+		return FALSE;
+	}
 }
 
-bool checkCorrectInput(User obj, string file, int uif)
+bool checkDataFile(User obj, string file, int uif)
 {
 	fstream aout;
 	aout.open(file, fstream::in);
@@ -155,7 +175,8 @@ bool checkCorrectInput(User obj, string file, int uif)
 		{
 			aout.close();
 			aout.open(file, fstream::app);
-			aout.write((char*)&obj, sizeof(User));
+			//aout.write((string)&obj, sizeof(User));
+			aout << obj.outputDataN() << ";" << obj.outputDataP() << endl;
 
 			cout << "+-------------------+---------------+-------+" << endl;
 			cout << "| Регистрация прошла успешно!               |" << endl;
@@ -184,8 +205,7 @@ bool checkCorrectInput(User obj, string file, int uif)
 		{
 			while (aout.read((char*)&TempObj[k], sizeof(User)))
 			{
-				//if (TempObj[k].outputDataN() == obj.outputDataN())
-				if (strcmp(TempObj[k].outputDataN(), obj.outputDataN()) == 0)
+				if (TempObj[k].outputDataN() == obj.outputDataN())
 				{
 					cout << "+-------------------+---------------+-------+" << endl;
 					cout << "| Уважаемый пользователь, внимание!         |" << endl;
@@ -207,36 +227,85 @@ bool checkCorrectInput(User obj, string file, int uif)
 			cout << system("pause") << endl;
 			aout.close();
 			aout.open(file, fstream::app);
-			aout.write((char*)&obj, sizeof(User));
+			aout << obj.outputDataN() << ";" << obj.outputDataP() << endl;
 			aout.close();
 			return TRUE;
 		}
 		else if (uif == 0)
 		{
-			while (aout.read((char*)&TempObj[k], sizeof(User)))
-			{
-
-				if (strcmp(TempObj[k].outputDataN(), obj.outputDataN()) == 0)
-					if (strcmp(TempObj[k].outputDataP(), obj.outputDataP()) == 0)
-					{
-						cout << "+-------------------+---------------+-------+" << endl;
-						cout << "| Авторизация прошла успешно!               |" << endl;
-						cout << "+-------------------+---------------+-------+" << endl;
-						cout << "| ";
-						cout << system("pause") << endl;
-						aout.close();
-						return TRUE;
-					}
-				k++;
-			}
-			cout << "+-------------------+---------------+-------+" << endl;
-			cout << "| Неверный логин или пароль!                |" << endl;
-			cout << "+-------------------+---------------+-------+" << endl;
-			cout << "| ";
-			cout << system("pause") << endl;
 			aout.close();
-			cin.ignore(10, '\n');
-			return FALSE;
+
+			ifstream in;
+			string buff, passCheck;
+			vector <string> out;
+			const char delim = ';';
+			bool check = false;
+
+			string templogin;
+			string temppass;
+
+			try 
+			{
+				in.open(file);
+				while (getline(in, buff)) 
+				{
+					size_t start, end = 0;
+					while ((start = buff.find_first_not_of(delim, end)) != std::string::npos)
+					{
+						end = buff.find(delim, start);
+						out.push_back(buff.substr(start, end - start));
+					}
+					templogin = out.front();
+					if (obj.outputDataN() == templogin) {
+						check = true;
+						temppass = out.back();
+						
+						system("cls");
+						if (temppass == obj.outputDataP()) 
+						{
+							cout << "+-------------------+---------------+-------+" << endl;
+							cout << "| Авторизация прошла успешно!               |" << endl;
+							cout << "+-------------------+---------------+-------+" << endl;
+							cout << "| ";
+							cout << system("pause") << endl;
+							out.clear();
+							return TRUE;
+						}
+						else 
+						{
+							cout << "+-------------------+---------------+-------+" << endl;
+							cout << "| Неверный логин или пароль...              |" << endl;
+							cout << "+-------------------+---------------+-------+" << endl;
+							cout << "| ";
+							cout << system("pause") << endl;
+							out.clear();
+							return FALSE;
+						}
+						
+					}
+					else
+					{
+						out.clear();
+					}
+				}
+				if (!check) {
+					cout << "+-------------------+---------------+-------+" << endl;
+					cout << "| Неверный логин или пароль...              |" << endl;
+					cout << "+-------------------+---------------+-------+" << endl;
+					cout << "| ";
+					cout << system("pause") << endl;
+					out.clear();
+					return FALSE;
+				}
+				in.close();
+			}
+			catch (...) 
+			{
+				cout << "Ошибка при попытке открытия файла! " << endl;
+				system("pause");
+				out.clear();
+				return FALSE;
+			}
 		}
 	}
 }
