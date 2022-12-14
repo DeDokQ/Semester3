@@ -4,11 +4,15 @@
 void goToXY(short x, short y, HANDLE hStdOut);
 
 int main_Menu(HANDLE hStdOut);
-	void setFirstAdmin();
+void setFirstAdmin();
 
-		void user_module();
-		void worker_module();
-		void admin_module();
+int user_menu();
+void deleteFromUsers(string oldname, bool DeleteUser, bool EditUser);
+int userEditMenu();
+
+int admin_menu();
+int workerMenu();
+void fileWorkersEdit(bool EditWorker, bool DeleteWorker, int AdminRoot);
 
 void registration();
 void autorisation();

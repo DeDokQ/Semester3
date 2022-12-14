@@ -5,9 +5,10 @@ int main()
 {
 	cin.unsetf(ios::skipws);//не игнорировать разделители
 	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTitle(L"...Кинотеатр <Заря>...");
+	SetConsoleTitle(L"...Кинотеатр Заря...");
 	setlocale(LC_ALL, "rus");
-
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	while (1)
 	{
 		switch (main_Menu(hStdOut))
