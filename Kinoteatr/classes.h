@@ -3,14 +3,18 @@
 /*
 Можно реализовать файл с откатом, в котором будет записываться имя администратора, совершившего последнее изменение.
 */
+class Person {
+public:
+    virtual bool dataSertificate(string logincheck, string passcheck) = 0;
+};
 
-class User
+class User:public Person
 {
 private:
 	string name;
 	string password;
 
-	virtual string encrypting(string str)
+	string encrypting(string str)
     {
         int n = 3;
         char* cstr = new char[str.length() + 1];
@@ -56,7 +60,6 @@ private:
 public:
     User(string newname, string newpassword) { this->name = newname; this->password = newpassword; }
     User(string newpassword) { this->password = encrypting(newpassword); }
-
     User(){}
 
     bool dataSertificate(string logincheck, string passcheck)
@@ -81,7 +84,7 @@ public:
             {
                 cout << "Пароль должен содержать не менее 4 символов " << endl;
                 system("pause");
-                return TRUE;
+                return FALSE;
             }
 
     }
@@ -96,7 +99,7 @@ public:
         return password;
     }
 
-    bool create_user(int uif)
+    bool create(int uif)
     {
         while (1)
         {
@@ -144,12 +147,18 @@ public:
         this->name = newname;
         this->password = encrypting(newpass);
     }
+
+    void setData2(string newname, string newpass)
+    {
+        this->name = newname;
+        this->password = newpass;
+    }
 };
 
-bool checkDataFile(User obj, string file, int uif);
-bool CheckAdminRoot(User);
-void deleteFromUsers(User obj);
 
+bool checkDataFile(User obj, string file, const int* uif);
+bool CheckAdminRoot(User);
+void usersOrder(User user, int adminRoot, bool create, bool deleteOrder);
 
 /*
 * 
@@ -178,8 +187,16 @@ public:
         this->salary = tempsal;
         this->age = tempage;
     }
+    Worker(string tempname, string temppass, string tempfio, string tempprof, string tempdisc, int tempsal, int tempage, int two) {
+        setData2(tempname, temppass);
+        this->FIO = tempfio;
+        this->profession = tempprof;
+        this->discription = tempdisc;
+        this->salary = tempsal;
+        this->age = tempage;
+    }
 
-    void createWorker()
+    void create()
     {
         system("cls");
         cout << "++-------------------------+-------------------------------------------------------++--------------------+" << endl;
@@ -198,7 +215,7 @@ public:
         cout << "|| Для Выхода введите пустую строчку в разделе создания аккаунт. Дальше отмена невозможна...            ||" << endl;
         cout << "++---------------------------------------------------------------------------------++--------------------+" << endl;
         cout << "|| Ввод ||" << endl;
-        if (create_user(0) == 0) return;
+        if (User::create(0) == 0) return;
         setFIO();
         setProfession();
         setDisc();
@@ -227,7 +244,8 @@ public:
         {
             cin.clear();
             cout << "|| Зарплата в месяц ||" << endl; 
-            cout << "|| - "; cin.ignore(10, '\n'); cin >> salary;
+            cout << "|| - "; cin.ignore(10, '\n'); 
+            cin >> salary;
 
             if (cin.good() && salary <= 1450 && salary >= 800) break;
             else
@@ -274,8 +292,6 @@ public:
         }
     }
 
-    bool hasUserWorker() { return false; }
-
     friend fstream& operator<<(fstream& f, const Worker& obj);
 
     string outFIO() { return FIO; }
@@ -283,15 +299,15 @@ public:
     string outDisc() { return discription; }
     int outSal() { return salary; }
     int outAge() { return age; }
+
+    void setFIO(string newFIO) { this->FIO = newFIO; }
+    void setProf(string newProf) { this->profession = newProf; }
+    void setDisc(string newDisc) { this->discription = newDisc; }
+    void setSal(int newSal) { this->salary = newSal; }
+    void setAge(int newAge) { this->age = newAge; }
 };
 
 void writeWorkerfile(Worker obj);
-
-fstream& operator<<(fstream& f, const Worker& obj)
-{
-    f.write(reinterpret_cast<const char*>(&obj), sizeof(obj));
-    return f;
-}
 
 /*
 *
@@ -308,6 +324,7 @@ protected:
     int SCR = 0; // SCR - security counter. Если пользователь на аккаунте админа ввёл 3 раза ключ безопасности НЕПРАВИЛЬНО, то его удаляет из списка администраторов.
     string title;
     string discription;
+
 public:
     int test;
     void SCR_manipulator(int fun)
@@ -449,6 +466,12 @@ public:
         kset << title + "\n" << discription;
         kset.close();
     }
+    
+    static void ourAdress()
+    {
+        static string adress = "Наш адрес: Улица Пушкина дом Калатушкина";
+        cout << adress;
+    }
 
     bool HasFileExist();
 };
@@ -490,4 +513,110 @@ bool HasKinoExist(string title)
 }
 
 void admin_module(Kinoteatr obj, User account);
-void user_module(User account);
+void user_module(Kinoteatr obj, User account);
+
+class motionPicture
+{
+private:
+    string titleMP;
+    string titleDisc;
+    string titleData;
+    string titleGenre;
+    double titleDiscount;
+    double titlePrice;
+
+    friend ostream& operator<<(ostream& os, const motionPicture& obj);
+    friend istream& operator>>(istream& in, motionPicture& obj);
+        
+public:
+
+    motionPicture(string MP, string DS, string DA, string GE, int DT, double PE) { this->titleMP = MP; this->titleDisc = DS; this->titleData = DA; this->titleGenre = GE; this->titleDiscount = DT; this->titlePrice = PE; }
+    motionPicture(){}
+    motionPicture(string MP, string DA, double PE){ this->titleMP = MP; this->titleData = DA; this->titlePrice = PE;}
+
+    void CreateNewPicture()
+    {
+        system("cls");
+        cout << "++============================++===================================================++====================++" << endl;
+        cout << "|| Режим создания кинокартины ||                                                   ||      Пример        ||" << endl;
+        cout << "++============================++===================================================++====================++" << endl;
+        cout << "|| Внимательно следуйте инструкции создания Кинокартины.                           || ЧИТАЙ              ||" << endl;
+        cout << "|| Информация, введённая Вами, будет просматриваться пользователями Кинотеатра!    || ВНИМАТЕЛЬНО        ||" << endl;
+        cout << "++=================================================================================++====================++" << endl;
+        cout << "||                                                                                 ||                    ||" << endl;
+        cout << "|| 1. Название Кинокартины                                                         || Аска Лэнгли-Сорью  ||" << endl;
+        cout << "|| 2. Описание Кинокартины                                                         ||     Пилот ЕВЫ      ||" << endl;
+        cout << "|| 3. Дата показа, она может быть не одна. Перечесление через запятую.             || Аска - полукровка  ||" << endl;
+        cout << "|| 4. Жанр                                                                         || Аска - полукровка  ||" << endl;
+        cout << "|| 4. Скидочное предложение                                                        ||        780         ||" << endl;
+        cout << "|| 5. Цена билета                                                                  ||       16 лет       ||" << endl;
+        cout << "++=================================================================================++====================++" << endl;
+        cout << "|| Для Выхода введите пустую строчку в первом пункте. Дальше отмена невозможна...                        ||" << endl;
+        cout << "++=======================================================================================================++" << endl;
+        cin.clear(); cin.ignore(10, '\n');
+        cout << "|| [1]: "; getline(cin, titleMP); if (titleMP.size() == 0) return;
+        cout << "|| [2]: "; getline(cin, titleDisc);
+        cout << "|| [3]: "; getline(cin, titleData);
+        cout << "|| [4]: "; getline(cin, titleGenre);
+        cout << "|| [5]: "; cin >> titleDiscount; titleDiscount = titleDiscount / 100; cin.clear(); cin.ignore(1, '\n');
+        cout << "|| [6]: "; cin >> titlePrice;
+        cout << "++=============================++========================================================================++" << endl;
+        cout << "|| Создание успешно Завершено! ||                                                                        ||" << endl;
+        cout << "++=============================++========================================================================++" << endl;
+        cout << "|| "; system("pause");
+
+    }
+
+    void PrintData()
+    {
+
+        cout << "++=======================================================================================================++" << endl;
+        cout << "||                                                                                                       ||" << endl;
+        cout << "||  Название Кинокартины || " << titleMP << endl;
+        cout << "||  Описание Кинокартины || " << titleDisc << endl;
+        cout << "||  Дата показа || " << titleData << endl;
+        cout << "||  Жанр || " << titleGenre << endl;
+        cout << "||  Скидочное предложение || " << titleDiscount * 100 << " %" << endl;
+        cout << "||  Цена билета || " << titlePrice << endl;
+        cout << "||  Цена билета с учётом скидки || " << titlePrice - (titlePrice*titleDiscount) << endl;
+        cout << "++=======================================================================================================++" << endl;
+        cout << "||                                                                                                       ||" << endl;
+        cout << "++=======================================================================================================++" << endl;
+    } 
+
+    string outGenre() { return titleGenre; }
+
+    string outMP() { return titleMP; }
+
+    string outData() { return titleData; }
+
+    double outPrice() { return titlePrice; }
+
+    double outFPrice() { return (titlePrice - (titlePrice * titleDiscount)); }
+};
+
+ostream& operator<<(ostream& os, const motionPicture& obj)
+{
+    os << obj.titleMP << ";" << obj.titleDisc << ";" << obj.titleData << ";" << obj.titleGenre << ";" << obj.titleDiscount << ";" << obj.titlePrice << endl;
+    return os;
+}
+
+istream& operator>>(istream& in, motionPicture& obj)
+{
+    in >> obj.titleMP >> obj.titleDisc >> obj.titleData >> obj.titleGenre >> obj.titleDiscount >> obj.titlePrice;
+    return in;
+}
+
+void writeFilmfile(motionPicture obj);
+
+void writeOrder(User user, motionPicture film);
+
+struct less_than_key
+{
+    inline bool operator() (motionPicture& class1, motionPicture& class2)
+    {
+        return (class1.outPrice() < class2.outPrice() );
+    }
+};
+
+void usersOrder(User user, int adminRoot);

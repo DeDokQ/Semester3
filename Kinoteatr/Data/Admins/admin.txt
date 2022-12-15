@@ -1,2 +1,4 @@
 admin;CDEFG
 Egor;)*+,
+sysadmin;CDEFG)*+,
+newadmin;CDEFG

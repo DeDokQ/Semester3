@@ -1,3 +1,7 @@
 admin;CDEFG
 Egor;)*+,
 Test;CDEFGHIJ
+sysadmin;CDEFG)*+,
+newadmin;CDEFG
+newuser;CDEFGHIJ
+auto;CDEF
