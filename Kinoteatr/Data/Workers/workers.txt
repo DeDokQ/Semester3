@@ -1,3 +1,4 @@
-Worker1;;<=>;grgr gr gr;re;er;999;44
-Worker3;;<=>;nre ntg f;oo;ff;1000;45
-Worker2;;<=>;hello hello hello;ok;fd;1111;34
+Worker1;$%&;grgr gr gr;re;er;999;44
+Worker3;$%&;nre ntg f;oo;ff;1000;45
+Worker2;$%&;hello hello hello;ok;fd;1111;34
+Worker7;;<=>;Поставьте, пожалуйста, допуск((;Студент БГУИР!;Ура, у меня допуск!;1000;34

@@ -158,7 +158,7 @@ public:
 
 bool checkDataFile(User obj, string file, const int* uif);
 bool CheckAdminRoot(User);
-void usersOrder(User user, int adminRoot, bool create, bool deleteOrder);
+void usersOrder(User user, int adminRoot, bool create, bool deleteOrder, bool Serching);
 
 /*
 * 

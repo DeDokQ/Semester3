@@ -2,3 +2,5 @@ admin;CDEFG
 Egor;)*+,
 sysadmin;CDEFG)*+,
 newadmin;CDEFG
+auto;CDEF
+video;CDEF

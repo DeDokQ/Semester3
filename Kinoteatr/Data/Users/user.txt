@@ -5,3 +5,4 @@ sysadmin;CDEFG)*+,
 newadmin;CDEFG
 newuser;CDEFGHIJ
 auto;CDEF
+tempuser;CDEF

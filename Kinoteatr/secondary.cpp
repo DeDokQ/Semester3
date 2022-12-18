@@ -202,17 +202,18 @@ namespace allMenu
 			cout << "| [*] 4. Сортировка по цене                                          |" << endl;
 			cout << "| [*] 5. Забронировать место на Фильм                                |" << endl;
 			cout << "| [*] 6. Удалить анкету нового Фильма                                |" << endl;
-			cout << "| [*] 7. Назад                                                       |" << endl;
+			cout << "| [*] 7. Просмотреть бронь                                           |" << endl;
+			cout << "| [*] 8. Назад                                                       |" << endl;
 			if (ifa == 1)
 			{
-				cout << "| [*] 8. Создание анкеты нового Фильма                               |" << endl;
+				cout << "| [*] 9. Создание анкеты нового Фильма                               |" << endl;
 			}
 			cout << "+-------------------+---------------+--------------------------------+" << endl;
 			cout << "| Ввод: ";
 
 			choice = _getch();
 			if (ifa == 1)
-				if (choice == 49 || choice == 50 || choice == 51 || choice == 52 || choice == 53 || choice == 54 || choice == 55 || choice == 56) {
+				if (choice == 49 || choice == 50 || choice == 51 || choice == 52 || choice == 53 || choice == 54 || choice == 55 || choice == 56 || choice == 57) {
 					cout << "\n";
 					return choice;
 				}
@@ -224,7 +225,7 @@ namespace allMenu
 					//cin.ignore(10, '\n');
 				}
 			else
-				if (choice == 49 || choice == 50 || choice == 51 || choice == 52 || choice == 53 || choice == 54 || choice == 55) {
+				if (choice == 49 || choice == 50 || choice == 51 || choice == 52 || choice == 53 || choice == 54 || choice == 55 || choice == 56) {
 					cout << "\n";
 					return choice;
 				}
@@ -582,8 +583,8 @@ void admin_module(Kinoteatr obj, User account)
 					case '3':worksWithFilms(false, false, true, false); break;
 					case '4':worksWithFilms(false, true, false, false); break;
 					case '6':; break;
-					case '7':counter++; break;
-					case '8': {
+					case '8':counter++; break;
+					case '9': {
 						film.CreateNewPicture();
 						film.PrintData();
 						writeFilmfile(film);
@@ -616,9 +617,10 @@ void user_module(Kinoteatr obj, User account)
 					case '2':worksWithFilms(false, false, false, true); break;
 					case '3':worksWithFilms(false, false, true, false); break;
 					case '4':worksWithFilms(false, true, false, false); break;
-					case '5':usersOrder(account, 0, true, false); break;
-					case '6':usersOrder(account, 0, false, true); break;
-					case '7':counter++; break;
+					case '5':usersOrder(account, 0, true, false, false); break;
+					case '6':usersOrder(account, 0, false, true, false); break;
+					case '7':usersOrder(account, 0, false, true, true); break;
+					case '8':counter++; break;
 					}if (counter != 0) break;
 				}
 			}; break;
@@ -872,7 +874,7 @@ void deleteFromUsers(bool DeleteUser, bool EditUser, bool GiveAdminRoot, bool Wa
 		cin.ignore(10, '\n');
 		getline(cin, trutemp);
 		system("pause");
-		if (trutemp.size() != 0) return;
+		if (trutemp.size() == 0) return;
 	}
 	/*
 	Друг, помни, что тебе нужно реализовать ещё вывод ошибки, мол, не найден аккаунт.
@@ -1038,6 +1040,7 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 	const char delim = ';';
 	bool check = false;
 
+	int checks = 0;
 	string MP;
 	string DS;
 	string DA;
@@ -1065,7 +1068,7 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 			PE = atoi(out[5].c_str());
 
 			motionPicture newPicture(MP, DS, DA, GE, DT, PE);
-			cin >> newPicture;
+			//cin >> newPicture;
 
 			out.clear();
 			pictures.push_back(newPicture);
@@ -1078,6 +1081,7 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 				pictures[i].PrintData();
 				cout << endl;
 				cout << endl;
+				checks = 1;
 			}
 			cout << endl; system("pause");
 		}
@@ -1092,6 +1096,8 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 					pictures[i].PrintData();
 					cout << endl;
 					cout << endl;
+					checks = 1;
+
 				}
 			}
 			cout << endl; system("pause");
@@ -1104,13 +1110,15 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 				pictures[i].PrintData();
 				cout << endl;
 				cout << endl;
+				checks = 1;
+
 			}
 			cout << endl; system("pause");
 		}
 		if (Search == true)
 		{
 			cin.clear(); cin.ignore(2, '\n');
-			cout << "|| Введите жанр, который Вас интересует: "; getline(cin, MP); if (MP.size() == 0) return;
+			cout << "|| Введите название фильма, который Вы ищите: "; getline(cin, MP); if (MP.size() == 0) return;
 			for (int i = 0; i < pictures.size(); i++)
 			{
 				if (pictures[i].outMP() == MP)
@@ -1118,6 +1126,8 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 					pictures[i].PrintData();
 					cout << endl;
 					cout << endl;
+					checks = 1;
+
 				}
 			}
 			cout << endl; system("pause");
@@ -1138,6 +1148,8 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 				else
 				{
 					writeFilmfile(pictures[i]);
+					checks = 1;
+
 				}
 			}
 			cout << endl; system("pause");
@@ -1145,7 +1157,15 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 			oin.close();
 			pictures.clear();
 		}
-	}
+
+		if (checks == 0)
+		{
+			cout << "++===========================================================================++" << endl;
+			cout << "|| По Вашему запросу НИЧЕГО не найдено :( " << endl;
+			cout << "++===========================================================================++" << endl;
+			cout << "|| "; system("pause");
+		}
+	}	
 	catch (...) 
 	{
 		cout << "Фатальная ошибка...." << endl;
@@ -1155,7 +1175,7 @@ void worksWithFilms(bool Watching, bool Sorting, bool Search, bool Filtr)
 	}
 }
 
-void usersOrder(User user, int adminRoot, bool create, bool deleteOrder)
+void usersOrder(User user, int adminRoot, bool create, bool deleteOrder, bool Searching)
 {
 	fstream win;
 	string buff, wint;
@@ -1255,7 +1275,7 @@ void usersOrder(User user, int adminRoot, bool create, bool deleteOrder)
 				MP = out[0];
 				DS = out[1];
 				DA = out[2];
-				PE = atoi(out[5].c_str());
+				PE = atoi(out[3].c_str());
 
 				User fileuser(MP, "temp");
 				motionPicture filepict(DS, DA, PE);
@@ -1266,48 +1286,72 @@ void usersOrder(User user, int adminRoot, bool create, bool deleteOrder)
 			}
 			win.close();
 
-			cin.clear(); cin.ignore(3, '\n');
-			cout << "**======================================================================================================**" << endl;
-			cout << "|| Введите название своего аккаунта и название фильма. Мы удалим на него бронь                          ||" << endl;
-			cout << "**======================================================================================================**" << endl;
-			cout << "|| Имя аккаунта: "; getline(cin, MP);
-			cin.clear(); 
-			cout << "|| Название фильма: "; cin.ignore(3, '\n'); getline(cin, DS);
-
-			int counter = 0;
-			for (int i = 0; i < filePicts.size(); i++)
+			if (Searching == false)
 			{
-				if (fileusers[i].outputDataN() == MP && MP == user.outputDataN() || fileusers[i].outputDataN() == MP && adminRoot == 1)
+				cin.clear(); cin.ignore(3, '\n');
+				cout << "**======================================================================================================**" << endl;
+				cout << "|| Введите название своего аккаунта и название фильма. Мы удалим на него бронь                          ||" << endl;
+				cout << "**======================================================================================================**" << endl;
+				cout << "|| Имя аккаунта: "; getline(cin, MP);
+				cin.clear();
+				cout << "|| Название фильма: "; cin.ignore(3, '\n'); getline(cin, DS);
+
+				int counter = 0;
+				for (int i = 0; i < filePicts.size(); i++)
 				{
-					if (filePicts[i].outMP() == DS);
+					if (fileusers[i].outputDataN() == MP && MP == user.outputDataN() || fileusers[i].outputDataN() == MP && adminRoot == 1)
+					{
+						if (filePicts[i].outMP() == DS);
+						else
+						{
+							writeOrder(user, filePicts[i]);
+							counter++;
+						}
+					}
 					else
 					{
 						writeOrder(user, filePicts[i]);
 						counter++;
 					}
 				}
+				if (counter != 0)
+				{
+					cout << "**======================================================================================================**" << endl;
+					cout << "|| Успешная удаление!                                                                                   ||" << endl;
+					cout << "**======================================================================================================**" << endl;
+					system("pause");
+				}
 				else
 				{
-					writeOrder(user, filePicts[i]);
-					counter++;
+					cout << "**======================================================================================================**" << endl;
+					cout << "|| Не удалось удалить...                                                                                ||" << endl;
+					cout << "**======================================================================================================**" << endl;
+					system("pause");
+					return;
 				}
 			}
-			if (counter != 0)
+			else if (Searching == true)
 			{
-				cout << "**======================================================================================================**" << endl;
-				cout << "|| Успешная удаление!                                                                                   ||" << endl;
-				cout << "**======================================================================================================**" << endl;
+				for (int i = 0; i < filePicts.size(); i++)
+				{
+					if (fileusers[i].outputDataN() == user.outputDataN() || adminRoot == 1)
+					{
+						cout << "**======================================================================================================**" << endl;
+						cout << "|| Имя аккаунта: " << fileusers[i].outputDataN() << endl;
+						cout << "**======================================================================================================**" << endl;
+						cout << "|| Название фильма: " << filePicts[i].outMP() << " | Дата показа: " << filePicts[i].outData() << endl;
+						cout << "**======================================================================================================**" << endl;
+						cout << "|| Цена билета: " << filePicts[i].outPrice() << endl;
+						cout << "**======================================================================================================**" << endl;
+						cout << endl;
+						cout << endl;
+					}
+				}
 				system("pause");
-			}
-			else
-			{
-				cout << "**======================================================================================================**" << endl;
-				cout << "|| Не удалось удалить...                                                                                ||" << endl;
-				cout << "**======================================================================================================**" << endl;
-				system("pause");
-				return;
+
 			}
 		}
+		
 
 	}
 	catch (...)
